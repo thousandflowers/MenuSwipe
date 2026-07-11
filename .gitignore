@@ -1,0 +1,4 @@
+.build/
+MenuSwipe.app/
+.DS_Store
+*.log
