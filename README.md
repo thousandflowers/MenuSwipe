@@ -1,39 +1,38 @@
 # MenuSwipe
 
-macOS menu-bar app. Two-finger horizontal swipe **over the menu bar** switches
-between running apps.
+**Experimental / work-in-progress.** A macOS menu-bar utility exploring how to
+scroll through menu bar icons.
 
-## How it works
-A session-level `CGEventTap` watches trackpad scroll events. When a continuous
-(two-finger) scroll happens inside the menu bar strip and is horizontal-dominant,
-MenuSwipe consumes it and activates the previous/next app in your order.
+## What it does now
+On launch (after granting **Accessibility** + **Screen Recording**) it:
+1. Enumerates every app's menu bar extras via the Accessibility API
+   (`AXExtrasMenuBar`).
+2. Captures each real glyph from the screen at its true position.
+3. Shows them in a borderless, always-on-top **overlay** over the menu bar's
+   icon area — a horizontally scrollable strip. Clicking a glyph `AXPress`es the
+   real element, opening its true menu.
 
 ## Build & run
 ```bash
 ./build.sh
 open MenuSwipe.app
 ```
-First launch prompts for **Accessibility** (System Settings → Privacy & Security →
-Accessibility). Grant it — the swipe starts working, no relaunch.
+Grant **Accessibility** and **Screen Recording** to MenuSwipe in
+System Settings → Privacy & Security. Ad-hoc signed, so each rebuild resets the
+grants.
 
-## Menu (status item ⇄)
-- **Attivo** — enable/disable (disabled = scrolls pass through untouched)
-- **Inverti direzione** — flip swipe direction
-- **Sensibilità** — Bassa / Media / Alta (swipe distance per switch)
-- **Ambito swipe**
-  - *Quali app scorrere*: Tutte / Solo a sinistra / Solo a destra
-  - *Sinistra/destra rispetto a*: App attiva (dinamico) / App fissa (pivot) / Metà lista
-- **Riordina app…** — drag-to-reorder window; the swipe follows this order
+## Honest status & limitations
+The original goal — *scroll the real system menu bar icons in place, all always
+visible, no second surface, no hide/show* — is **not achievable** for a
+third-party app. Each menu bar icon is owned by its app; macOS exposes no API to
+move or scroll another app's icons. Approaches tried:
 
-## App order
-Order is user-defined and persisted (bundle IDs in UserDefaults). New apps append
-at the end; reorder them in the window. Quit apps keep their remembered slot.
+| Approach | Outcome |
+|---|---|
+| Hide/reveal via spacer status item | works, but icons appear/disappear |
+| Wide status item strip | on notched Macs it eats bar width → pushes real icons behind the notch |
+| Floating overlay (this build) | doesn't consume bar width, but a fixed window can't align pixel-perfect with the real bar |
 
-## Scope model
-`scope = f(side, reference)`. Reference index r = current app / chosen pivot /
-list middle. `left` → apps before r, `right` → apps after r, `all` → whole ring
-(wraps). Pure logic covered by `scratchpad/scope_check.swift` (ALL PASS).
-
-## Limits
-- Primary-display menu bar only (v1).
-- If swipe doesn't fire after granting Accessibility, also enable **Input Monitoring**.
+A polished result (seamless, notch-aware, click-forwarding) is essentially what
+**Bartender** does — using private APIs and continuous per-OS maintenance. This
+repo is a research spike, not a finished product.
