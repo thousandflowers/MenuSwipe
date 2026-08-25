@@ -9,7 +9,7 @@ On launch (after granting **Accessibility** + **Screen Recording**) it:
    (`AXExtrasMenuBar`).
 2. Captures each real glyph from the screen at its true position.
 3. Shows them in a borderless, always-on-top **overlay** over the menu bar's
-   icon area — a horizontally scrollable strip. Clicking a glyph `AXPress`es the
+   icon area - a horizontally scrollable strip. Clicking a glyph `AXPress`es the
    real element, opening its true menu.
 
 ## Build & run
@@ -22,8 +22,8 @@ System Settings → Privacy & Security. Ad-hoc signed, so each rebuild resets th
 grants.
 
 ## Honest status & limitations
-The original goal — *scroll the real system menu bar icons in place, all always
-visible, no second surface, no hide/show* — is **not achievable** for a
+The original goal - *scroll the real system menu bar icons in place, all always
+visible, no second surface, no hide/show* - is **not achievable** for a
 third-party app. Each menu bar icon is owned by its app; macOS exposes no API to
 move or scroll another app's icons. Approaches tried:
 
@@ -34,5 +34,5 @@ move or scroll another app's icons. Approaches tried:
 | Floating overlay (this build) | doesn't consume bar width, but a fixed window can't align pixel-perfect with the real bar |
 
 A polished result (seamless, notch-aware, click-forwarding) is essentially what
-**Bartender** does — using private APIs and continuous per-OS maintenance. This
+**Bartender** does - using private APIs and continuous per-OS maintenance. This
 repo is a research spike, not a finished product.
